@@ -1,1 +1,10 @@
-GET        /                       controllers.HomeController.index
+# Initial Routes
+GET     /api                           controllers.MediathequeController.index
+
+# Show Routes
+GET     /api/shows                                                       controllers.ShowController.list()
+GET     /api/shows/:showId                                               controllers.ShowController.getById(showId: String)
+GET     /api/shows/:showId/seasons                                       controllers.ShowController.listSeasons(showId: String)
+GET     /api/shows/:showId/seasons/:seasonId                             controllers.ShowController.getSeasonById(showId: String, seasonId: String)
+GET     /api/shows/:showId/seasons/:seasonId/episodes                    controllers.ShowController.listEpisodes(showId: String, seasonId: String)
+GET     /api/shows/:showId/seasons/:seasonId/episodes/:episodeId         controllers.ShowController.getEpisodeById(showId: String, seasonId: String, episodeId: String)
