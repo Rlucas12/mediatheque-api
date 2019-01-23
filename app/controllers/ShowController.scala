@@ -15,10 +15,10 @@ class ShowController(showService: ShowService, cc: ControllerComponents)(implici
 
   def getById(showId: String) = Action.async {
     val id = UUID.fromString(showId)
-    showService.getById(id).map { v => v match {
+    showService.getById(id).map {
       case Some(show) => Ok(show.asJson)
       case None => NotFound
-    }}
+    }
   }
 
   def list() = Action.async {
@@ -30,10 +30,10 @@ class ShowController(showService: ShowService, cc: ControllerComponents)(implici
   def getSeasonById(showId: String, seasonId: String) = Action.async {
     val showIdUUID = UUID.fromString(showId)
     val seasonIdUUID = UUID.fromString(seasonId)
-    showService.getSeasonById(showIdUUID, seasonIdUUID).map { v => v match {
+    showService.getSeasonById(showIdUUID, seasonIdUUID).map {
       case Some(season) => Ok(season.asJson)
       case None => NotFound
-    }}
+    }
   }
 
   def listSeasons(showId: String) = Action.async {
@@ -47,10 +47,10 @@ class ShowController(showService: ShowService, cc: ControllerComponents)(implici
     val showIdUUID = UUID.fromString(showId)
     val seasonIdUUID = UUID.fromString(seasonId)
     val episodeIdUUID = UUID.fromString(episodeId)
-    showService.getEpisodeById(showIdUUID, seasonIdUUID, episodeIdUUID).map { v => v match {
+    showService.getEpisodeById(showIdUUID, seasonIdUUID, episodeIdUUID).map {
       case Some(episode) => Ok(episode.asJson)
       case None => NotFound
-    }}
+    }
   }
 
   def listEpisodes(showId: String, seasonId: String) = Action.async {
