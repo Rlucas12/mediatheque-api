@@ -2,27 +2,26 @@ package services.impl
 
 import java.util.UUID
 
-import daos.Fixture
+import core.{DbContext, DbExecutor}
+import daos.ShowDAO
+import db.Fixture
 import models.{Episode, Season, Show}
 import services.ShowService
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class ShowServiceImpl extends ShowService {
+class ShowServiceImpl(showDAO: ShowDAO, protected val dbExecutor: DbExecutor)(implicit ec: ExecutionContext) extends DbContext with ShowService {
 
   override def getById(showId: UUID): Future[Option[Show]] = {
-    Future.successful(
-      Fixture
-        .shows
-        .find(_.id == showId)
-    )
+    showDAO
+      .getById(showId)
+      .commit()
   }
 
   override def list(): Future[Seq[Show]] = {
-    Future.successful(
-      Fixture
-        .shows
-    )
+    showDAO
+      .list()
+      .commit()
   }
 
   override def getSeasonById(showId: UUID, seasonId: UUID): Future[Option[Season]] = {

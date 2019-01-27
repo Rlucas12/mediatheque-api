@@ -8,6 +8,10 @@ class MediathequeApplicationLoader extends ApplicationLoader {
     LoggerConfigurator(context.environment.classLoader).foreach {
       _.configure(context.environment)
     }
-    new MediathequeApplicationComponents(context)
-  }.application
+    loadAppComponents(context).application
+  }
+
+  def loadAppComponents(context: Context): MediathequeApplicationComponents = {
+    new BuiltInComponentsFromContext(context) with MediathequeApplicationComponents
+  }
 }
