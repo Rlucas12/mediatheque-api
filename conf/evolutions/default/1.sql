@@ -2,7 +2,7 @@
 
 CREATE TABLE movies (
     id uuid NOT NULL,
-    name CHARACTER VARYING (50) NOT NULL,
+    name CHARACTER VARYING (150) NOT NULL,
     ranking INTEGER NOT NULL,
     release_date TIMESTAMP WITH TIME ZONE NOT NULL,
     PRIMARY KEY (id)
@@ -10,7 +10,7 @@ CREATE TABLE movies (
 
 CREATE TABLE shows (
     id uuid NOT NULL,
-    name CHARACTER VARYING (50) NOT NULL,
+    name CHARACTER VARYING (150) NOT NULL,
     ranking INTEGER NOT NULL,
     release_date TIMESTAMP WITH TIME ZONE NOT NULL,
     PRIMARY KEY (id)
@@ -26,7 +26,7 @@ CREATE TABLE seasons (
 
 CREATE TABLE episodes (
     id uuid NOT NULL,
-    name CHARACTER VARYING (50) NOT NULL,
+    name CHARACTER VARYING (150) NOT NULL,
     description VARCHAR NOT NULL,
     release_date TIMESTAMP WITH TIME ZONE NOT NULL,
     season_id uuid NOT NULL,

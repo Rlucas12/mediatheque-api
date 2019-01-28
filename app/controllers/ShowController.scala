@@ -7,18 +7,18 @@ import play.api.libs.circe.Circe
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.ShowService
 import models.json._
+import models.json.news.NewShowJson
+import models.news.NewShow
 
 import scala.concurrent.ExecutionContext
 
 class ShowController(showService: ShowService, cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AbstractController(cc) with Circe with ShowJson with SeasonJson with EpisodeJson {
+  extends AbstractController(cc) with Circe with ShowJson with NewShowJson {
 
-  def getById(showId: String) = Action.async {
-    val id = UUID.fromString(showId)
-    showService.getById(id).map {
-      case Some(show) => Ok(show.asJson)
-      case None => NotFound
-    }
+  def add() = Action(circe.json[NewShow]).async { implicit request =>
+    showService
+      .add(request.body)
+      .map(show => Ok(show.asJson))
   }
 
   def list() = Action.async {
@@ -27,38 +27,29 @@ class ShowController(showService: ShowService, cc: ControllerComponents)(implici
     }
   }
 
-  def getSeasonById(showId: String, seasonId: String) = Action.async {
-    val showIdUUID = UUID.fromString(showId)
-    val seasonIdUUID = UUID.fromString(seasonId)
-    showService.getSeasonById(showIdUUID, seasonIdUUID).map {
-      case Some(season) => Ok(season.asJson)
+  def getById(showId: String) = Action.async {
+    val id = UUID.fromString(showId)
+
+    showService.getById(id).map {
+      case Some(show) => Ok(show.asJson)
       case None => NotFound
     }
   }
 
-  def listSeasons(showId: String) = Action.async {
-    val showIdUUID = UUID.fromString(showId)
-    showService.listSeasons(showIdUUID).map { seasons =>
-      Ok(seasons.asJson)
-    }
+  def update(showId: String) = Action(circe.json[NewShow]).async { implicit request =>
+    val id = UUID.fromString(showId)
+
+    showService
+      .update(id, request.body)
+      .map(_ => NoContent)
   }
 
-  def getEpisodeById(showId: String, seasonId: String, episodeId: String) = Action.async {
-    val showIdUUID = UUID.fromString(showId)
-    val seasonIdUUID = UUID.fromString(seasonId)
-    val episodeIdUUID = UUID.fromString(episodeId)
-    showService.getEpisodeById(showIdUUID, seasonIdUUID, episodeIdUUID).map {
-      case Some(episode) => Ok(episode.asJson)
-      case None => NotFound
-    }
-  }
+  def delete(showId: String) = Action.async {
+    val id = UUID.fromString(showId)
 
-  def listEpisodes(showId: String, seasonId: String) = Action.async {
-    val showIdUUID = UUID.fromString(showId)
-    val seasonIdUUID = UUID.fromString(seasonId)
-    showService.listEpisodes(showIdUUID, seasonIdUUID).map { episodes =>
-      Ok(episodes.asJson)
-    }
+    showService
+      .delete(id)
+      .map(_ => NoContent)
   }
 
 }

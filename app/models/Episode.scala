@@ -5,7 +5,7 @@ import java.util.UUID
 import org.joda.time.DateTime
 
 case class Episode(
- id: UUID,
+ id: UUID = UUID.randomUUID,
  name: String,
  description: String,
  releaseDate: DateTime,

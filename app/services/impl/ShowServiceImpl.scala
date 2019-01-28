@@ -1,20 +1,19 @@
 package services.impl
 
-import java.util.UUID
-
+import core.models.{Nix, UUID}
 import core.{DbContext, DbExecutor}
 import daos.ShowDAO
-import db.Fixture
-import models.{Episode, Season, Show}
+import models.Show
+import models.news.NewShow
 import services.ShowService
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShowServiceImpl(showDAO: ShowDAO, protected val dbExecutor: DbExecutor)(implicit ec: ExecutionContext) extends DbContext with ShowService {
 
-  override def getById(showId: UUID): Future[Option[Show]] = {
+  override def add(newShow: NewShow): Future[Show] = {
     showDAO
-      .getById(showId)
+      .add(newShow.toShow())
       .commit()
   }
 
@@ -24,39 +23,22 @@ class ShowServiceImpl(showDAO: ShowDAO, protected val dbExecutor: DbExecutor)(im
       .commit()
   }
 
-  override def getSeasonById(showId: UUID, seasonId: UUID): Future[Option[Season]] = {
-    Future.successful(
-      Fixture
-        .seasons
-        .find(s => s.id == seasonId && s.showId == showId)
-    )
+  override def getById(showId: UUID): Future[Option[Show]] = {
+    showDAO
+      .getById(showId)
+      .commit()
   }
 
-  override def listSeasons(showId: UUID): Future[Seq[Season]] = {
-    Future.successful(
-      Fixture
-        .seasons
-        .filter(_.showId == showId)
-    )
+  override def update(showId: UUID, newShow: NewShow): Future[Nix] = {
+    showDAO
+      .update(showId, newShow)
+      .commit()
   }
 
-  override def getEpisodeById(showId: UUID, seasonId: UUID, episodeId: UUID): Future[Option[Episode]] = {
-    val validSeason: Season = Fixture.seasons.find(_.showId == showId).get
-    Future.successful(
-      Fixture
-        .episodes
-        .find(e => e.id == episodeId && e.seasonId == seasonId && validSeason.id == seasonId)
-    )
-  }
-
-  override def listEpisodes(showId: UUID, seasonId: UUID): Future[Seq[Episode]] = {
-    val validSeason: Season = Fixture.seasons.find(_.showId == showId).get
-    Future.successful(
-      Fixture
-        .episodes
-        .filter(_.seasonId == validSeason.id)
-        .filter(_.seasonId == seasonId)
-    )
+  override def delete(showId: UUID): Future[Nix] = {
+    showDAO
+      .delete(showId)
+      .commit()
   }
 
 }

@@ -1,10 +1,36 @@
 # Initial Routes
 GET     /api                           controllers.MediathequeController.index
 
+# Movie Routes
+POST    /api/movies                                                      controllers.MovieController.add()
+GET     /api/movies                                                      controllers.MovieController.list()
+GET     /api/movies/:movieId                                             controllers.MovieController.getById(movieId: String)
+PUT     /api/movies/:movieId                                             controllers.MovieController.update(movieId: String)
+DELETE  /api/movies/:movieId                                             controllers.MovieController.delete(movieId: String)
+
+
 # Show Routes
+POST    /api/shows                                                       controllers.ShowController.add()
 GET     /api/shows                                                       controllers.ShowController.list()
 GET     /api/shows/:showId                                               controllers.ShowController.getById(showId: String)
-GET     /api/shows/:showId/seasons                                       controllers.ShowController.listSeasons(showId: String)
-GET     /api/shows/:showId/seasons/:seasonId                             controllers.ShowController.getSeasonById(showId: String, seasonId: String)
-GET     /api/shows/:showId/seasons/:seasonId/episodes                    controllers.ShowController.listEpisodes(showId: String, seasonId: String)
-GET     /api/shows/:showId/seasons/:seasonId/episodes/:episodeId         controllers.ShowController.getEpisodeById(showId: String, seasonId: String, episodeId: String)
+PUT     /api/shows/:showId                                               controllers.ShowController.update(showId: String)
+DELETE  /api/shows/:showId                                               controllers.ShowController.delete(showId: String)
+
+GET     /api/shows/:showId/seasons                                       controllers.SeasonController.listByShowId(showId: String)
+GET     /api/shows/:showId/seasons/:seasonId                             controllers.SeasonController.getByShowId(showId: String, seasonId: String)
+GET     /api/shows/:showId/seasons/:seasonId/episodes                    controllers.EpisodeController.listByShowIdAndSeasonId(showId: String, seasonId: String)
+GET     /api/shows/:showId/seasons/:seasonId/episodes/:episodeId         controllers.EpisodeController.getByShowIdAndSeasonId(showId: String, seasonId: String, episodeId: String)
+
+
+# Seasons Routes
+POST    /api/seasons                                                     controllers.SeasonController.add()
+GET     /api/seasons/:seasonId                                           controllers.SeasonController.getById(seasonId: String)
+PUT     /api/seasons/:seasonId                                           controllers.SeasonController.update(seasonId: String)
+DELETE  /api/seasons/:seasonId                                           controllers.SeasonController.delete(seasonId: String)
+
+
+# Episode Routes
+POST    /api/episodes                                                    controllers.EpisodeController.add()
+GET     /api/episodes/:episodeId                                         controllers.EpisodeController.getById(episodeId: String)
+PUT     /api/episodes/:episodeId                                         controllers.EpisodeController.update(episodeId: String)
+DELETE  /api/episodes/:episodeId                                         controllers.EpisodeController.delete(episodeId: String)

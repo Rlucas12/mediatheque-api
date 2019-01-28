@@ -1,19 +1,16 @@
 package daos
 
-import java.util.UUID
-
-import models.{Episode, Season, Show}
+import models.Show
 import _root_.slick.dbio.DBIO
+import core.models.{Nix, UUID}
+import models.news.NewShow
 
 trait ShowDAO {
 
-  def getById(showId: UUID): DBIO[Option[Show]]
+  def add(show: Show): DBIO[Show]
   def list(): DBIO[Seq[Show]]
-
-  def getSeasonById(showId: UUID, seasonId: UUID): DBIO[Option[Season]]
-  def listSeasons(showId: UUID): DBIO[Seq[Season]]
-
-  def getEpisodeById(showId: UUID, seasonId: UUID, episodeId: UUID): DBIO[Option[Episode]]
-  def listEpisodes(showId: UUID, seasonId: UUID): DBIO[Seq[Episode]]
+  def getById(showId: UUID): DBIO[Option[Show]]
+  def update(showId: UUID, newShow: NewShow): DBIO[Nix]
+  def delete(showId: UUID): DBIO[Nix]
 
 }

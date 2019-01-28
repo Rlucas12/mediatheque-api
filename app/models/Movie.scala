@@ -1,7 +1,6 @@
 package models
 
-import java.util.UUID
-
+import core.models.UUID
 import org.joda.time.DateTime
 
 case class Movie(
