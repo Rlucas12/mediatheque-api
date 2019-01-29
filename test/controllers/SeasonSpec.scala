@@ -1,79 +1,90 @@
 package controllers
 
+import java.util.UUID
+
 import _root_.slick.dbio.DBIO
 import core.models.Nix
 import helpers.{JodaDateTimeJson, TestApplication}
-import models.json.news.NewMovieJson
-import models.news.NewMovie
+import models.json.news.NewSeasonJson
+import models.news.NewSeason
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class SeasonSpec extends TestApplication with JodaDateTimeJson with NewMovieJson {
+class SeasonSpec extends TestApplication with JodaDateTimeJson with NewSeasonJson {
 
-  "Movie API" should {
+  "Season API" should {
 
-    val newMovieJson = Json.parse(
-      """
+    lazy val showId = UUID.randomUUID()
+    val newSeasonJson = Json.parse(
+      s"""
         |{
-        |	"name": "New Movie",
-        |	"ranking": "4",
-        |	"releaseDate": "27/01/2019"
+        |	"releaseDate": "27/01/2019",
+        | "showId": "$showId"
         |}
       """.stripMargin)
-    val newMovie = NewMovie("New Movie", 4, DateTime.parse("27/01/2019",DateTimeFormat.forPattern("dd/MM/yyyy")))
-    val movie = newMovie.toMovie()
+    val newSeason = NewSeason(DateTime.parse("27/01/2019",DateTimeFormat.forPattern("dd/MM/yyyy")), showId)
+    val season = newSeason.toSeason()
 
-    "Create a movie" in {
-      (movieDAOMock.add _).when(*).returns(DBIO.successful(movie))
-      val response = route(app, withHeader(POST, "/api/movies").withJsonBody(newMovieJson)).get
-      status(response) mustEqual OK
-
-      val json = contentAsJson(response)
-      (json \ "name").as[String] must ===(newMovie.name)
-      (json \ "ranking").as[Int] must ===(newMovie.ranking)
-      (json \ "releaseDate").as[DateTime] must ===(newMovie.releaseDate)
-    }
-
-    "List all movies" in {
-      (movieDAOMock.list _).when().returns(DBIO.successful(Seq(movie)))
-      val response = route(app, withHeader(GET, "/api/movies")).get
-      status(response) mustEqual OK
-
-      val json = contentAsJson(response)
-      (json \ 0 \ "id").as[String] must ===(movie.id.toString)
-      (json \ 0 \ "name").as[String] must ===(movie.name)
-      (json \ 0 \ "ranking").as[Int] must ===(movie.ranking)
-      (json \ 0 \ "releaseDate").as[DateTime] must ===(movie.releaseDate)
-    }
-
-    "Get a movie" in {
-      (movieDAOMock.getById _).when(movie.id).returns(DBIO.successful(Some(movie)))
-      val response = route(app, withHeader(GET, s"/api/movies/${movie.id}")).get
+    "Create a season" in {
+      (seasonDAOMock.add _).when(*).returns(DBIO.successful(season))
+      val response = route(app, withHeader(POST, "/api/seasons").withJsonBody(newSeasonJson)).get
       status(response) must ===(OK)
 
       val json = contentAsJson(response)
-      (json \ "id").as[String] must ===(movie.id.toString)
-      (json \ "name").as[String] must ===(movie.name)
-      (json \ "ranking").as[Int] must ===(movie.ranking)
-      (json \ "releaseDate").as[DateTime] must ===(movie.releaseDate)
+      (json \ "id").as[String] must ===(season.id.toString)
+      (json \ "releaseDate").as[DateTime] must ===(season.releaseDate)
+      (json \ "showId").as[String] must ===(season.showId.toString)
     }
 
-    "Update a movie" in {
-      (movieDAOMock.update _).when(*, *).returns(DBIO.successful(Nix))
-      val response = route(app, withHeader(PUT, s"/api/movies/${movie.id}").withJsonBody(newMovieJson)).get
-      status(response) must ===(NO_CONTENT)
+    "Get a season" in {
+      (seasonDAOMock.getById _).when(season.id).returns(DBIO.successful(Some(season)))
+      val response = route(app, withHeader(GET, s"/api/seasons/${season.id}")).get
+      status(response) must ===(OK)
 
-      (movieDAOMock.update _).verify(movie.id, newMovie)
+      val json = contentAsJson(response)
+      (json \ "id").as[String] must ===(season.id.toString)
+      (json \ "releaseDate").as[DateTime] must ===(season.releaseDate)
+      (json \ "showId").as[String] must ===(season.showId.toString)
     }
 
-    "Delete a movie" in {
-      (movieDAOMock.delete _).when(movie.id).returns(DBIO.successful(Nix))
-      val response = route(app, withHeader(DELETE, s"/api/movies/${movie.id}")).get
+    "Update a season" in {
+      (seasonDAOMock.update _).when(*, *).returns(DBIO.successful(Nix))
+      val response = route(app, withHeader(PUT, s"/api/seasons/${season.id}").withJsonBody(newSeasonJson)).get
       status(response) must ===(NO_CONTENT)
 
-      (movieDAOMock.delete _).verify(movie.id)
+      (seasonDAOMock.update _).verify(season.id, newSeason)
+    }
+
+    "Delete a season" in {
+      (seasonDAOMock.delete _).when(season.id).returns(DBIO.successful(Nix))
+      val response = route(app, withHeader(DELETE, s"/api/seasons/${season.id}")).get
+      status(response) must ===(NO_CONTENT)
+
+      (seasonDAOMock.delete _).verify(season.id)
+    }
+
+    "List all season by showId" in {
+      (seasonDAOMock.listByShowId _).when(showId).returns(DBIO.successful(Seq(season)))
+      val response = route(app, withHeader(GET, s"/api/shows/$showId/seasons")).get
+      status(response) must ===(OK)
+
+      val json = contentAsJson(response)
+      (json \ 0 \ "id").as[String] must ===(season.id.toString)
+      (json \ 0 \ "releaseDate").as[DateTime] must ===(season.releaseDate)
+      (json \ 0 \ "showId").as[String] must ===(season.showId.toString)
+    }
+
+    "Get a season by showId" in {
+      (seasonDAOMock.getByShowId _).when(showId, *).returns(DBIO.successful(Some(season)))
+      val response = route(app, withHeader(GET, s"/api/shows/$showId/seasons/${season.id}")).get
+      status(response) must ===(OK)
+
+      val json = contentAsJson(response)
+      (json \ "id").as[String] must ===(season.id.toString)
+      (json \ "releaseDate").as[DateTime] must ===(season.releaseDate)
+      (json \ "showId").as[String] must ===(season.showId.toString)
     }
 
   }
