@@ -1,0 +1,25 @@
+{
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+
+  ],
+  "env": {
+    "DB_PASS": {
+      "required": true
+    },
+    "DB_URL": {
+      "required": true
+    },
+    "DB_USER": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "name": "mediatheque-api",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
