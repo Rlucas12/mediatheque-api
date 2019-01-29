@@ -5,8 +5,8 @@ import org.joda.time.DateTime
 
 trait CoreJson {
 
-  implicit val dateTimeEncoder: Encoder[DateTime] = new Encoder[DateTime] {
-    override def apply(a: DateTime): Json = Encoder.encodeLong(a.getMillis)
+  implicit val dateTimeEncoder: Encoder[DateTime] = {
+    Encoder[String].contramap(_.toString("dd/MM/yyyy"))
   }
 
 }
