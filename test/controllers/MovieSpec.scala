@@ -28,7 +28,7 @@ class MovieSpec extends TestApplication with JodaDateTimeJson with NewMovieJson 
     "Create a movie" in {
       (movieDAOMock.add _).when(*).returns(DBIO.successful(movie))
       val response = route(app, withHeader(POST, "/api/movies").withJsonBody(newMovieJson)).get
-      status(response) mustEqual OK
+      status(response) must ===(OK)
 
       val json = contentAsJson(response)
       (json \ "name").as[String] must ===(newMovie.name)
@@ -39,7 +39,7 @@ class MovieSpec extends TestApplication with JodaDateTimeJson with NewMovieJson 
     "List all movies" in {
       (movieDAOMock.list _).when().returns(DBIO.successful(Seq(movie)))
       val response = route(app, withHeader(GET, "/api/movies")).get
-      status(response) mustEqual OK
+      status(response) must ===(OK)
 
       val json = contentAsJson(response)
       (json \ 0 \ "id").as[String] must ===(movie.id.toString)
