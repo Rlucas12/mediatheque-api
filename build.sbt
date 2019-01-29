@@ -29,7 +29,11 @@ libraryDependencies ++= Seq(
 
   "com.github.tminglei" %% "slick-pg" % tmingleiVersion,
   "com.github.tminglei" %% "slick-pg_joda-time" % tmingleiVersion,
-  "com.github.tminglei" %% "slick-pg_circe-json" % tmingleiVersion
+  "com.github.tminglei" %% "slick-pg_circe-json" % tmingleiVersion,
+
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",
+
+  "org.scalamock" %% "scalamock" % "4.1.0" % Test
 
 )
 

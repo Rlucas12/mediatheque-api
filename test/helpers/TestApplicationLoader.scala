@@ -1,5 +1,0 @@
-package helpers
-
-trait TestApplicationLoader {
-
-}
