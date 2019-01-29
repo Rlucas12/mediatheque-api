@@ -14,7 +14,7 @@ trait NewEpisodeJson extends CoreJson {
   implicit val newEpisodeDecoder: Decoder[NewEpisode] = Decoder.instance[NewEpisode] { (c: HCursor) =>
     for {
       name        <- c.downField("name").read(StringRules.maxLength(150))
-      description <- c.downField("description").read(StringRules.minLength(50))
+      description <- c.downField("description").read(StringRules.minLength(10))
       releaseDate <- c.downField("releaseDate").read(JodaRules.jodaDateWithPattern("dd/MM/yyyy"))
       seasonId    <- c.downField("seasonId").as[UUID]
     } yield NewEpisode(name, description, releaseDate, seasonId)
